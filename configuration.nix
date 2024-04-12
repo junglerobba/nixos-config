@@ -101,6 +101,10 @@
   services.flatpak = { enable = true; };
 
   services.gnome.gnome-keyring.enable = true;
+  security.pam.services.greetd = {
+    startSession = true;
+    enableGnomeKeyring = true;
+  };
   programs.dconf.enable = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
