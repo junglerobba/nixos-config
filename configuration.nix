@@ -2,14 +2,25 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ inputs, config, pkgs, ... }:
 
 {
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  imports =
-    [ # Include the results of the hardware scan.
-      /etc/nixos/hardware-configuration.nix
-    ];
+  nix = {
+    settings = {
+      experimental-features = [ "nix-command" "flakes" ];
+      auto-optimise-store = true;
+    };
+    gc = {
+      automatic = true;
+      persistent = false;
+      dates = "daily";
+      options = "--delete-older-than 10d";
+    };
+  };
+
+  imports = [ # Include the results of the hardware scan.
+    /etc/nixos/hardware-configuration.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -44,17 +55,16 @@
   };
 
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
-  # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  services.xserver = {
+    enable = true;
+    excludePackages = with pkgs; [ xterm ];
+  };
 
   # Configure keymap in X11
-  services.xserver = {
-    layout = "us";
-    xkbVariant = "";
-  };
+  # services.xserver = {
+  #   layout = "us";
+  #   xkbVariant = "";
+  # };
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -63,6 +73,7 @@
   sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
+  security.polkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -76,9 +87,21 @@
     #media-session.enable = true;
   };
 
-  services.flatpak = {
+  xdg.portal = {
     enable = true;
+    wlr.enable = true;
+
+    xdgOpenUsePortal = true;
+
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    configPackages = [ pkgs.gnome.gnome-session ];
+    config = { common = { default = [ "wlr" "gtk" ]; }; };
   };
+
+  services.flatpak = { enable = true; };
+
+  services.gnome.gnome-keyring.enable = true;
+  programs.dconf.enable = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -88,17 +111,37 @@
     isNormalUser = true;
     description = "j";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-    #  thunderbird
-    ];
+    packages = with pkgs;
+      [
+        #  thunderbird
+      ];
   };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
+  environment.systemPackages = with pkgs;
+    [
+      #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+      #  wget
+      libsecret
+    ];
+
+  fonts.packages = with pkgs; [
+    noto-fonts-cjk
+    noto-fonts-emoji
+    jetbrains-mono
   ];
+
+  programs.fish.enable = true;
+  programs.bash = {
+    interactiveShellInit = ''
+      if [[ $(${pkgs.procps}/bin/ps --no-header --pid $PPID --format=comm) != "fish" && -z ''${BASH_EXECUTION_STRING} ]]
+      then
+        shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
+        exec ${pkgs.fish}/bin/fish $LOGIN_OPTION
+      fi
+    '';
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -115,6 +158,16 @@
     };
   };
 
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet -r --time --cmd sway";
+        user = "greeter";
+      };
+    };
+  };
+
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
@@ -125,6 +178,37 @@
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
+
+  system.autoUpgrade = {
+    enable = true;
+    flake = inputs.self.outPath;
+    flags =
+      [ "--update-input" "nixpkgs" "--no-write-lock-file" "--impure" "-L" ];
+    dates = "02:00";
+    randomizedDelaySec = "45min";
+  };
+
+  systemd.services.flatpak-auto-update = {
+    description = "Update flatpaks";
+    unitConfig = { Type = "oneshot"; };
+    serviceConfig = {
+      ExecStart =
+        "${pkgs.flatpak}/bin/flatpak update --assumeyes --noninteractive";
+    };
+    wantedBy = [ "default.target" ];
+  };
+
+  systemd.timers.flatpak-auto-update = {
+    enable = true;
+    wantedBy = [ "timers.target" ];
+    description = "Update flatpaks daily";
+    timerConfig = {
+      OnBootSec = "10min";
+      OnUnitInactiveSec = "1day";
+      Persistent = true;
+      Unit = "flatpak-auto-update.service";
+    };
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
