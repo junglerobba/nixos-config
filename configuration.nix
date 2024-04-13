@@ -100,7 +100,6 @@
 
   services.flatpak = { enable = true; };
 
-  services.gnome.gnome-keyring.enable = true;
   security.pam.services.greetd = {
     startSession = true;
     enableGnomeKeyring = true;
@@ -154,6 +153,8 @@
   #   enable = true;
   #   enableSSHSupport = true;
   # };
+
+  services.dbus.packages = [ pkgs.gcr ];
 
   virtualisation.docker = {
     rootless = {
