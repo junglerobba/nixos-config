@@ -57,7 +57,7 @@
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;
-    excludePackages = with pkgs; [ xterm ];
+    excludePackages = with pkgs; [ xterm xorg.xorgserver ];
   };
 
   # Configure keymap in X11
