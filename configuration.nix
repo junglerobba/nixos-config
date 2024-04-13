@@ -183,6 +183,8 @@
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
+  zramSwap.enable = true;
+
   system.autoUpgrade = {
     enable = true;
     flake = inputs.self.outPath;
