@@ -112,9 +112,9 @@
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.j = {
+  users.users.junglerobba = {
     isNormalUser = true;
-    description = "j";
+    description = "junglerobba";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs;
       [

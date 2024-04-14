@@ -20,7 +20,7 @@
     let
       system = "x86_64-linux";
       home-config = inputs.home-config.packages.${system}.module {
-        username = "j";
+        username = "junglerobba";
         homedir = "/home";
       };
     in {
