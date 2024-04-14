@@ -60,6 +60,8 @@
   services.xserver = {
     enable = true;
     excludePackages = with pkgs; [ xterm xorg.xorgserver ];
+    displayManager.gdm.enable = true;
+    desktopManager.gnome.enable = true;
   };
 
   # Configure keymap in X11
@@ -89,23 +91,8 @@
     #media-session.enable = true;
   };
 
-  xdg.portal = {
-    enable = true;
-    wlr.enable = true;
-
-    xdgOpenUsePortal = true;
-
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-    configPackages = [ pkgs.gnome.gnome-session ];
-    config = { common = { default = [ "wlr" "gtk" ]; }; };
-  };
-
   services.flatpak = { enable = true; };
 
-  security.pam.services.greetd = {
-    startSession = true;
-    enableGnomeKeyring = true;
-  };
   programs.dconf.enable = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -162,16 +149,6 @@
     rootless = {
       enable = true;
       setSocketVariable = true;
-    };
-  };
-
-  services.greetd = {
-    enable = true;
-    settings = {
-      default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet -r --time --cmd \"dbus-run-session sway\"";
-        user = "greeter";
-      };
     };
   };
 
