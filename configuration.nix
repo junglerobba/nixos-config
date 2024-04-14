@@ -22,6 +22,8 @@
     /etc/nixos/hardware-configuration.nix
   ];
 
+  services.udev.packages = with pkgs; [ game-devices-udev-rules ];
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
