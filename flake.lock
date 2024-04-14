@@ -64,11 +64,11 @@
         "tms": "tms"
       },
       "locked": {
-        "lastModified": 1713124120,
-        "narHash": "sha256-1MdoFB2l+ofhM7+FRGiMPYISYPYHEDsjfAPoC6u4Z5w=",
+        "lastModified": 1713127172,
+        "narHash": "sha256-VLL4oT+rL43oommL37E+3xsAVwhei5uwsQVVWsHyU/I=",
         "owner": "junglerobba",
         "repo": "home-manager",
-        "rev": "ede7ee51c3548db01dcf5162f2930fb72aba1498",
+        "rev": "825e57282de3751ffc2564c082908a9784016a30",
         "type": "github"
       },
       "original": {
