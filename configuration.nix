@@ -168,6 +168,7 @@
   system.autoUpgrade = {
     enable = true;
     flake = inputs.self.outPath;
+    operation = "boot";
     flags = [ "--update-input" "nixpkgs" "--impure" "-L" ];
     dates = "02:00";
     randomizedDelaySec = "45min";
