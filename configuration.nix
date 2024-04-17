@@ -2,9 +2,11 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ inputs, config, pkgs, ... }:
-
-{
+{ inputs, desktop, pkgs, lib, ... }:
+let
+  gnome = desktop == "gnome";
+  sway = desktop == "sway";
+in {
   nix = {
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
@@ -60,8 +62,8 @@
   services.xserver = {
     enable = true;
     excludePackages = with pkgs; [ xterm xorg.xorgserver ];
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
+    displayManager.gdm.enable = gnome;
+    desktopManager.gnome.enable = gnome;
   };
 
   # Configure keymap in X11
@@ -91,7 +93,23 @@
     #media-session.enable = true;
   };
 
-  services.flatpak = { enable = true; };
+  xdg.portal = lib.mkIf sway {
+    enable = true;
+    wlr.enable = true;
+
+    xdgOpenUsePortal = true;
+
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    configPackages = [ pkgs.gnome.gnome-session ];
+    config.common.default = [ "wlr" "gtk" ];
+  };
+
+  services.flatpak.enable = true;
+
+  security.pam.services.greetd = lib.mkIf sway {
+    startSession = true;
+    enableGnomeKeyring = true;
+  };
 
   programs.dconf.enable = true;
 
@@ -149,6 +167,17 @@
     rootless = {
       enable = true;
       setSocketVariable = true;
+    };
+  };
+
+  services.greetd = {
+    enable = sway;
+    settings = {
+      default_session = {
+        command = ''
+          ${pkgs.greetd.tuigreet}/bin/tuigreet -r --time --cmd "dbus-run-session sway"'';
+        user = "greeter";
+      };
     };
   };
 

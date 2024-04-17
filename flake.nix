@@ -19,14 +19,14 @@
   outputs = { self, nixpkgs, ... }@inputs:
     let
       system = "x86_64-linux";
+      desktop = "gnome";
       home-config = inputs.home-config.packages.${system}.module {
         username = "junglerobba";
         homedir = "/home";
       };
     in {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-
-        specialArgs = { inherit inputs; };
+        specialArgs = { inherit inputs desktop; };
         modules = [
           ./configuration.nix
           inputs.home-manager.nixosModules.default
