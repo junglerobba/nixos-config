@@ -203,25 +203,27 @@ in {
     randomizedDelaySec = "45min";
   };
 
-  systemd.services.flatpak-auto-update = {
-    description = "Update flatpaks";
-    unitConfig = { Type = "oneshot"; };
-    serviceConfig = {
-      ExecStart =
-        "${pkgs.flatpak}/bin/flatpak update --assumeyes --noninteractive";
+  systemd = lib.mkIf sway {
+    services.flatpak-auto-update = {
+      description = "Update flatpaks";
+      unitConfig = { Type = "oneshot"; };
+      serviceConfig = {
+        ExecStart =
+          "${pkgs.flatpak}/bin/flatpak update --assumeyes --noninteractive";
+      };
+      wantedBy = [ "default.target" ];
     };
-    wantedBy = [ "default.target" ];
-  };
 
-  systemd.timers.flatpak-auto-update = {
-    enable = true;
-    wantedBy = [ "timers.target" ];
-    description = "Update flatpaks daily";
-    timerConfig = {
-      OnBootSec = "10min";
-      OnUnitInactiveSec = "1day";
-      Persistent = true;
-      Unit = "flatpak-auto-update.service";
+    timers.flatpak-auto-update = {
+      enable = true;
+      wantedBy = [ "timers.target" ];
+      description = "Update flatpaks daily";
+      timerConfig = {
+        OnBootSec = "10min";
+        OnUnitInactiveSec = "1day";
+        Persistent = true;
+        Unit = "flatpak-auto-update.service";
+      };
     };
   };
 
