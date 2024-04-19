@@ -170,6 +170,8 @@ in {
     };
   };
 
+  services.uptimed.enable = true;
+
   services.greetd = {
     enable = sway;
     settings = {
