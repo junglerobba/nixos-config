@@ -93,15 +93,15 @@ in {
     #media-session.enable = true;
   };
 
-  xdg.portal = lib.mkIf sway {
+  xdg.portal = if sway then {
     enable = true;
-    wlr.enable = true;
-
     xdgOpenUsePortal = true;
-
+    wlr.enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     configPackages = [ pkgs.gnome.gnome-session ];
     config.common.default = [ "wlr" "gtk" ];
+  } else {
+    xdgOpenUsePortal = true;
   };
 
   services.flatpak.enable = true;
