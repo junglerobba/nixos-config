@@ -20,13 +20,14 @@
     let
       system = "x86_64-linux";
       desktop = "gnome";
+      username = "junglerobba";
       home-config = inputs.home-config.packages.${system}.module {
-        username = "junglerobba";
-        homedir = "/home";
+        inherit username;
+        homedir = "/home/${username}";
       };
     in {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs desktop; };
+        specialArgs = { inherit inputs desktop username; };
         modules = [
           ./configuration.nix
           inputs.home-manager.nixosModules.default

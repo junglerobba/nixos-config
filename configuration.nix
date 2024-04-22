@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ inputs, desktop, pkgs, lib, ... }:
+{ inputs, desktop, username, pkgs, lib, ... }:
 let
   gnome = desktop == "gnome";
   sway = desktop == "sway";
@@ -117,14 +117,10 @@ in {
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.junglerobba = {
+  users.users.${username} = {
     isNormalUser = true;
-    description = "junglerobba";
+    description = username;
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs;
-      [
-        #  thunderbird
-      ];
   };
 
   # List packages installed in system profile. To search, run:
