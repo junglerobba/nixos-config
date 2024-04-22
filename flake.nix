@@ -22,7 +22,7 @@
       desktop = "gnome";
       username = "junglerobba";
       home-config = inputs.home-config.packages.${system}.module {
-        inherit username;
+        inherit username desktop;
         homedir = "/home/${username}";
       };
     in {
