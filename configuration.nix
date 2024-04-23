@@ -14,7 +14,6 @@ in {
     };
     gc = {
       automatic = true;
-      persistent = false;
       dates = "daily";
       options = "--delete-older-than 10d";
     };
