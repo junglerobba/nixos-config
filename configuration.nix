@@ -105,6 +105,8 @@ in {
 
   services.flatpak.enable = true;
 
+  services.fwupd.enable = true;
+
   security.pam.services.greetd = lib.mkIf sway {
     startSession = true;
     enableGnomeKeyring = true;
