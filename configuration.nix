@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ inputs, desktop, username, pkgs, lib, ... }:
+{ inputs, config, desktop, username, pkgs, lib, ... }:
 let
   gnome = desktop == "gnome";
   sway = desktop == "sway";
@@ -202,6 +202,12 @@ in {
     dates = "02:00";
     randomizedDelaySec = "45min";
   };
+
+  environment.etc."current-system-packages".text = let
+    packages = builtins.map (p: "${p.name}") config.environment.systemPackages;
+    sortedUnique = builtins.sort builtins.lessThan (lib.lists.unique packages);
+    formatted = builtins.concatStringsSep "\n" sortedUnique;
+  in formatted;
 
   systemd = lib.mkIf sway {
     services.flatpak-auto-update = {
