@@ -125,6 +125,29 @@ in {
     extraGroups = [ "networkmanager" "wheel" ];
   };
 
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+    gamescopeSession.enable = true;
+    package = pkgs.steam.override {
+      extraPkgs = pkgs: with pkgs; [ liberation_ttf noto-fonts-cjk ];
+    };
+    extraCompatPackages = let
+      steamtinkerlaunch = pkgs.stdenv.mkDerivation {
+        name = "steamtinkerlaunch";
+        src = ./steam;
+        installPhase = ''
+          mkdir -p $out
+          cp $src/{compatibilitytool,toolmanifest}.vdf $out
+          ln -sn ${pkgs.steamtinkerlaunch}/bin/steamtinkerlaunch $out/steamtinkerlaunch
+        '';
+      };
+    in [ steamtinkerlaunch pkgs.proton-ge-bin ];
+  };
+  nixpkgs.config.allowUnfreePredicate = pkg:
+    builtins.elem (lib.getName pkg) [ "steam" "steam-original" "steam-run" ];
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs;
