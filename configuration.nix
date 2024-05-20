@@ -131,7 +131,14 @@ in {
     dedicatedServer.openFirewall = true;
     gamescopeSession.enable = true;
     package = pkgs.steam.override {
-      extraPkgs = pkgs: with pkgs; [ liberation_ttf noto-fonts-cjk ];
+      extraPkgs = pkgs:
+        with pkgs; [
+          liberation_ttf
+          noto-fonts
+          noto-fonts-cjk
+          noto-fonts-lgc-plus
+          noto-fonts-color-emoji
+        ];
     };
     extraCompatPackages = let
       steamtinkerlaunch = pkgs.stdenv.mkDerivation {
