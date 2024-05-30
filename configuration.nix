@@ -132,13 +132,23 @@ in {
     gamescopeSession.enable = true;
     package = pkgs.steam.override {
       extraPkgs = pkgs:
-        with pkgs; [
+        with pkgs;
+        let
+          obs-vkcapture = obs-studio-plugins.obs-vkcapture.overrideAttrs {
+            cmakeFlags = [ "-DBUILD_PLUGIN=off" ];
+          };
+        in [
+          obs-vkcapture
           liberation_ttf
           noto-fonts
           noto-fonts-cjk
           noto-fonts-lgc-plus
           noto-fonts-color-emoji
         ];
+      extraEnv = {
+        MANGOHUD = "1";
+        OBS_VKCAPTURE = "1";
+      };
     };
     extraCompatPackages = let
       steamtinkerlaunch = pkgs.stdenv.mkDerivation {
