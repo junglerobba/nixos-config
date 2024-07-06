@@ -201,6 +201,8 @@ in {
 
   services.dbus.packages = [ pkgs.gcr ];
 
+  virtualisation.libvirtd.enable = true;
+
   virtualisation.docker = {
     rootless = {
       enable = true;
