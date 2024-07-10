@@ -163,11 +163,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1720319044,
-        "narHash": "sha256-Yk1xGG+qNYSYRqwCwx1hl47wMu1XGOhw7LpKodzVGhQ=",
+        "lastModified": 1720582872,
+        "narHash": "sha256-4tYBjNTHqcpMYKWCHzDi3ujiyD3ortxKAPJjDnyog1g=",
         "owner": "helix-editor",
         "repo": "helix",
-        "rev": "0c8d51ee3620470c99863371518f03d5b85351d8",
+        "rev": "86982ab33ce95449a9df929f54883d31014760f8",
         "type": "github"
       },
       "original": {
@@ -195,11 +195,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1720347577,
-        "narHash": "sha256-pgyTxnbHLg+UgyeH2B9I+HQhjD2dHaUDr+uZRMOuhTs=",
+        "lastModified": 1720631177,
+        "narHash": "sha256-urHo1pm3jSdIuPh86kXBo74u6tre601uDxmkTAfpt4Q=",
         "owner": "junglerobba",
         "repo": "home-manager",
-        "rev": "a1ad3233fc0754f6e8581c9d45eea89273b6746b",
+        "rev": "1fe0532e210a70c44aadd5ef60b46cd7ca671fba",
         "type": "github"
       },
       "original": {
@@ -215,11 +215,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1720327769,
-        "narHash": "sha256-kAsg3Lg4YKKpGw+f1W2s5hzjP8B0y/juowvjK8utIag=",
+        "lastModified": 1720470846,
+        "narHash": "sha256-7ftA4Bv5KfH4QdTRxqe8/Hz2YTKo+7IQ9n7vbNWgv28=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "6b7ce96f34b324e4e104abc30d06955d216bac71",
+        "rev": "2fb5c1e0a17bc6059fa09dc411a43d75f35bb192",
         "type": "github"
       },
       "original": {
@@ -252,11 +252,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1720031269,
-        "narHash": "sha256-rwz8NJZV+387rnWpTYcXaRNvzUSnnF9aHONoJIYmiUQ=",
+        "lastModified": 1720418205,
+        "narHash": "sha256-cPJoFPXU44GlhWg4pUk9oUPqurPlCFZ11ZQPk21GTPU=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "9f4128e00b0ae8ec65918efeba59db998750ead6",
+        "rev": "655a58a72a6601292512670343087c2d75d859c1",
         "type": "github"
       },
       "original": {
@@ -365,11 +365,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1720337277,
-        "narHash": "sha256-q0tyfxp0MbgsbBLU1fyC8vxofCrTWbq+aTcHq2FSEfQ=",
+        "lastModified": 1720599394,
+        "narHash": "sha256-pY+RKA7dAxMXzJzW1P5wggXqz70or14kVEXihZdf1Eg=",
         "owner": "jrmoulton",
         "repo": "tmux-sessionizer",
-        "rev": "203a31b47fb30da36165da68497c3ee3606ba903",
+        "rev": "d0f05de609582464b0c4f26642c70f0fb9211468",
         "type": "github"
       },
       "original": {

@@ -2,14 +2,26 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ inputs, config, desktop, username, pkgs, lib, ... }:
+{
+  inputs,
+  config,
+  desktop,
+  username,
+  pkgs,
+  lib,
+  ...
+}:
 let
   gnome = desktop == "gnome";
   sway = desktop == "sway";
-in {
+in
+{
   nix = {
     settings = {
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       auto-optimise-store = true;
     };
     gc = {
@@ -19,7 +31,8 @@ in {
     };
   };
 
-  imports = [ # Include the results of the hardware scan.
+  imports = [
+    # Include the results of the hardware scan.
     /etc/nixos/hardware-configuration.nix
   ];
 
@@ -61,7 +74,10 @@ in {
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;
-    excludePackages = with pkgs; [ xterm xorg.xorgserver ];
+    excludePackages = with pkgs; [
+      xterm
+      xorg.xorgserver
+    ];
     displayManager.gdm.enable = gnome;
     desktopManager.gnome.enable = gnome;
   };
@@ -93,16 +109,20 @@ in {
     #media-session.enable = true;
   };
 
-  xdg.portal = if sway then {
-    enable = true;
-    xdgOpenUsePortal = true;
-    wlr.enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-    configPackages = [ pkgs.gnome.gnome-session ];
-    config.common.default = [ "wlr" "gtk" ];
-  } else {
-    xdgOpenUsePortal = true;
-  };
+  xdg.portal =
+    {
+      xdgOpenUsePortal = true;
+    }
+    // lib.optionalAttrs sway {
+      enable = true;
+      wlr.enable = true;
+      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+      configPackages = [ pkgs.gnome.gnome-session ];
+      config.common.default = [
+        "wlr"
+        "gtk"
+      ];
+    };
 
   services.flatpak.enable = true;
 
@@ -122,7 +142,10 @@ in {
   users.users.${username} = {
     isNormalUser = true;
     description = username;
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
   };
 
   programs.steam = {
@@ -131,13 +154,15 @@ in {
     dedicatedServer.openFirewall = true;
     gamescopeSession.enable = true;
     package = pkgs.steam.override {
-      extraPkgs = pkgs:
+      extraPkgs =
+        pkgs:
         with pkgs;
         let
           obs-vkcapture = obs-studio-plugins.obs-vkcapture.overrideAttrs {
             cmakeFlags = [ "-DBUILD_PLUGIN=off" ];
           };
-        in [
+        in
+        [
           obs-vkcapture
           liberation_ttf
           noto-fonts
@@ -150,29 +175,38 @@ in {
         OBS_VKCAPTURE = "1";
       };
     };
-    extraCompatPackages = let
-      steamtinkerlaunch = pkgs.stdenv.mkDerivation {
-        name = "steamtinkerlaunch";
-        src = ./steam;
-        installPhase = ''
-          mkdir -p $out
-          cp $src/{compatibilitytool,toolmanifest}.vdf $out
-          ln -sn ${pkgs.steamtinkerlaunch}/bin/steamtinkerlaunch $out/steamtinkerlaunch
-        '';
-      };
-    in [ steamtinkerlaunch pkgs.proton-ge-bin ];
+    extraCompatPackages =
+      let
+        steamtinkerlaunch = pkgs.stdenv.mkDerivation {
+          name = "steamtinkerlaunch";
+          src = ./steam;
+          installPhase = ''
+            mkdir -p $out
+            cp $src/{compatibilitytool,toolmanifest}.vdf $out
+            ln -sn ${pkgs.steamtinkerlaunch}/bin/steamtinkerlaunch $out/steamtinkerlaunch
+          '';
+        };
+      in
+      [
+        steamtinkerlaunch
+        pkgs.proton-ge-bin
+      ];
   };
-  nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.elem (lib.getName pkg) [ "steam" "steam-original" "steam-run" ];
+  nixpkgs.config.allowUnfreePredicate =
+    pkg:
+    builtins.elem (lib.getName pkg) [
+      "steam"
+      "steam-original"
+      "steam-run"
+    ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs;
-    [
-      #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-      #  wget
-      libsecret
-    ];
+  environment.systemPackages = with pkgs; [
+    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    #  wget
+    libsecret
+  ];
 
   fonts.packages = with pkgs; [
     noto-fonts-cjk
@@ -216,8 +250,7 @@ in {
     enable = sway;
     settings = {
       default_session = {
-        command = ''
-          ${pkgs.greetd.tuigreet}/bin/tuigreet -r --time --cmd "dbus-run-session sway"'';
+        command = ''${pkgs.greetd.tuigreet}/bin/tuigreet -r --time --cmd "dbus-run-session sway"'';
         user = "greeter";
       };
     };
@@ -240,24 +273,32 @@ in {
     enable = true;
     flake = inputs.self.outPath;
     operation = "boot";
-    flags = [ "--update-input" "nixpkgs" "--impure" "-L" ];
+    flags = [
+      "--update-input"
+      "nixpkgs"
+      "--impure"
+      "-L"
+    ];
     dates = "02:00";
     randomizedDelaySec = "45min";
   };
 
-  environment.etc."current-system-packages".text = let
-    packages = builtins.map (p: "${p.name}") config.environment.systemPackages;
-    sortedUnique = builtins.sort builtins.lessThan (lib.lists.unique packages);
-    formatted = builtins.concatStringsSep "\n" sortedUnique;
-  in formatted;
+  environment.etc."current-system-packages".text =
+    let
+      packages = builtins.map (p: "${p.name}") config.environment.systemPackages;
+      sortedUnique = builtins.sort builtins.lessThan (lib.lists.unique packages);
+      formatted = builtins.concatStringsSep "\n" sortedUnique;
+    in
+    formatted;
 
   systemd = lib.mkIf sway {
     services.flatpak-auto-update = {
       description = "Update flatpaks";
-      unitConfig = { Type = "oneshot"; };
+      unitConfig = {
+        Type = "oneshot";
+      };
       serviceConfig = {
-        ExecStart =
-          "${pkgs.flatpak}/bin/flatpak update --assumeyes --noninteractive";
+        ExecStart = "${pkgs.flatpak}/bin/flatpak update --assumeyes --noninteractive";
       };
       wantedBy = [ "default.target" ];
     };
