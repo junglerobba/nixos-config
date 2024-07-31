@@ -238,11 +238,9 @@ in
 
   virtualisation.libvirtd.enable = true;
 
-  virtualisation.docker = {
-    rootless = {
-      enable = true;
-      setSocketVariable = true;
-    };
+  virtualisation.podman = {
+    enable = true;
+    defaultNetwork.settings.dns_enabled = true;
   };
 
   services.uptimed.enable = true;
