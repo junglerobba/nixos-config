@@ -14,6 +14,7 @@
 let
   gnome = desktop == "gnome";
   sway = desktop == "sway";
+  cosmic = desktop == "cosmic";
 in
 {
   nix = {
@@ -83,12 +84,8 @@ in
     displayManager.gdm.enable = gnome;
     desktopManager.gnome.enable = gnome;
   };
-
-  # Configure keymap in X11
-  # services.xserver = {
-  #   layout = "us";
-  #   xkbVariant = "";
-  # };
+  services.displayManager.cosmic-greeter.enable = cosmic;
+  services.desktopManager.cosmic.enable = cosmic;
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -209,11 +206,13 @@ in
     libsecret
   ];
 
-  fonts.packages = with pkgs; [
-    noto-fonts-cjk
-    noto-fonts-emoji
-    jetbrains-mono
-  ];
+  fonts.packages =
+    (with pkgs; [
+      noto-fonts-cjk
+      noto-fonts-emoji
+      jetbrains-mono
+    ])
+    ++ lib.optionals (!gnome) (with pkgs; [ cantarell-fonts ]);
 
   programs.fish.enable = true;
   programs.bash = {
@@ -245,8 +244,8 @@ in
 
   services.uptimed.enable = true;
 
-  services.greetd = {
-    enable = sway;
+  services.greetd = lib.mkIf sway {
+    enable = true;
     settings = {
       default_session = {
         command = ''${pkgs.greetd.tuigreet}/bin/tuigreet -r --time --cmd "dbus-run-session sway"'';
@@ -290,7 +289,7 @@ in
     in
     formatted;
 
-  systemd = lib.mkIf sway {
+  systemd = lib.mkIf (!gnome) {
     services.flatpak-auto-update = {
       description = "Update flatpaks";
       unitConfig = {
@@ -300,18 +299,7 @@ in
         ExecStart = "${pkgs.flatpak}/bin/flatpak update --assumeyes --noninteractive";
       };
       wantedBy = [ "default.target" ];
-    };
-
-    timers.flatpak-auto-update = {
-      enable = true;
-      wantedBy = [ "timers.target" ];
-      description = "Update flatpaks daily";
-      timerConfig = {
-        OnBootSec = "10min";
-        OnUnitInactiveSec = "1day";
-        Persistent = true;
-        Unit = "flatpak-auto-update.service";
-      };
+      startAt = "daily";
     };
   };
 

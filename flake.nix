@@ -15,7 +15,6 @@
     };
     helix = {
       url = "github:helix-editor/helix";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     home-config = {
       url = "github:junglerobba/home-manager";
@@ -24,13 +23,16 @@
       inputs.tms.follows = "tms";
       inputs.helix.follows = "helix";
     };
+    nixos-cosmic = {
+      url = "github:lilyinstarlight/nixos-cosmic";
+    };
   };
 
   outputs =
     { self, nixpkgs, ... }@inputs:
     let
       system = "x86_64-linux";
-      desktop = "gnome";
+      desktop = "cosmic";
       username = "junglerobba";
       home-config = inputs.home-config.packages.${system}.module {
         inherit username desktop;
@@ -43,7 +45,20 @@
           inherit inputs desktop username;
         };
         modules = [
+          {
+            nix.settings = {
+              substituters = [
+                "https://helix.cachix.org"
+                "https://cosmic.cachix.org/"
+              ];
+              trusted-public-keys = [
+                "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
+                "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE="
+              ];
+            };
+          }
           ./configuration.nix
+          inputs.nixos-cosmic.nixosModules.default
           inputs.home-manager.nixosModules.default
           {
             home-manager = home-config // {
