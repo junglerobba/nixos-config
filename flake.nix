@@ -11,7 +11,6 @@
 
     tms = {
       url = "github:jrmoulton/tmux-sessionizer";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     helix = {
       url = "github:helix-editor/helix";
@@ -32,7 +31,7 @@
     { self, nixpkgs, ... }@inputs:
     let
       system = "x86_64-linux";
-      desktop = "cosmic";
+      desktop = "gnome";
       username = "junglerobba";
       home-config = inputs.home-config.packages.${system}.module {
         inherit username desktop;
