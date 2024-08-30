@@ -211,7 +211,6 @@ in
       [
         gnome-system-monitor
         nautilus
-        alacritty
       ]
     );
 
