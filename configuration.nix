@@ -278,7 +278,7 @@ in
 
   system.autoUpgrade = {
     enable = true;
-    flake = inputs.self.outPath;
+    flake = "${inputs.self.outPath}#${desktop}";
     operation = "boot";
     flags = [
       "--update-input"

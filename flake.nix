@@ -31,41 +31,52 @@
     { self, nixpkgs, ... }@inputs:
     let
       system = "x86_64-linux";
-      desktop = "gnome";
       username = "junglerobba";
-      home-config = inputs.home-config.packages.${system}.module {
-        inherit username desktop;
-        homedir = "/home/${username}";
-      };
+      desktops = [
+        "gnome"
+        "sway"
+        "cosmic"
+      ];
+      home-config =
+        desktop:
+        inputs.home-config.packages.${system}.module {
+          inherit username desktop;
+          homedir = "/home/${username}";
+        };
     in
     {
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs desktop username;
-        };
-        modules = [
-          {
-            nix.settings = {
-              substituters = [
-                "https://helix.cachix.org"
-                "https://cosmic.cachix.org/"
-              ];
-              trusted-public-keys = [
-                "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
-                "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE="
-              ];
+      nixosConfigurations = builtins.listToAttrs (
+        builtins.map (desktop: {
+          name = desktop;
+          value = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              inherit inputs desktop username;
             };
-          }
-          ./configuration.nix
-          inputs.nixos-cosmic.nixosModules.default
-          inputs.home-manager.nixosModules.default
-          {
-            home-manager = home-config // {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-            };
-          }
-        ];
-      };
+            modules = [
+              {
+                nix.settings = {
+                  substituters = [
+                    "https://helix.cachix.org"
+                    "https://cosmic.cachix.org/"
+                  ];
+                  trusted-public-keys = [
+                    "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
+                    "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE="
+                  ];
+                };
+              }
+              ./configuration.nix
+              inputs.nixos-cosmic.nixosModules.default
+              inputs.home-manager.nixosModules.default
+              {
+                home-manager = (home-config desktop) // {
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                };
+              }
+            ];
+          };
+        }) desktops
+      );
     };
 }
