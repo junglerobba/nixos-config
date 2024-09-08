@@ -115,7 +115,7 @@ in
       enable = true;
       wlr.enable = true;
       extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-      configPackages = [ pkgs.gnome.gnome-session ];
+      configPackages = [ pkgs.gnome-session ];
       config.common.default = [
         "wlr"
         "gtk"
@@ -207,7 +207,7 @@ in
       libsecret
       lm_sensors
     ])
-    ++ lib.optionals cosmic (
+    ++ lib.optionals (!gnome) (
       with pkgs;
       [
         gnome-system-monitor
