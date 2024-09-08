@@ -130,6 +130,7 @@ in
     startSession = true;
     enableGnomeKeyring = true;
   };
+  security.pam.services.swaylock = lib.mkIf sway { };
 
   programs.dconf.enable = true;
 

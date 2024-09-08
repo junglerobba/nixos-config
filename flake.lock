@@ -248,11 +248,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1725795850,
-        "narHash": "sha256-CTK0z8cVzAwSh3VD6z1a8dlQUlJPINkeLMZuKaBesig=",
+        "lastModified": 1725833137,
+        "narHash": "sha256-iUGD+C98UBkWKDm4i1nrfiZYjuaWzXUM3deEkovz5tA=",
         "owner": "junglerobba",
         "repo": "home-manager",
-        "rev": "fe33892e8032aa95fa7737ae873b3a49708a1a76",
+        "rev": "adbb0e2262457c3b10e2048d0a4d65bf540a363a",
         "type": "github"
       },
       "original": {
