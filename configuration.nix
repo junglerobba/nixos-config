@@ -116,10 +116,15 @@ in
       wlr.enable = true;
       extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
       configPackages = [ pkgs.gnome-session ];
-      config.common.default = [
-        "wlr"
-        "gtk"
-      ];
+      config.common = {
+        default = [
+          "wlr"
+          "gtk"
+        ];
+        "org.freedesktop.impl.portal.Inhibit" = [
+          "none"
+        ];
+      };
     };
 
   services.flatpak.enable = true;
