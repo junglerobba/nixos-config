@@ -314,7 +314,18 @@ in
         ExecStart = "${pkgs.flatpak}/bin/flatpak update --assumeyes --noninteractive";
       };
       wantedBy = [ "default.target" ];
-      startAt = "daily";
+    };
+    timers.flatpak-auto-update = {
+      enable = true;
+      wantedBy = [ "timers.target" ];
+      description = "Update flatpaks daily";
+      timerConfig = {
+        OnBootSec = "0";
+        RandomizedDelaySec = "1m";
+        OnUnitInactiveSec = "1day";
+        Persistent = true;
+        Unit = "flatpak-auto-update.service";
+      };
     };
   };
 
