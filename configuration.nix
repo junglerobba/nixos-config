@@ -37,7 +37,13 @@ in
     /etc/nixos/hardware-configuration.nix
   ];
 
-  services.udev.packages = with pkgs; [ game-devices-udev-rules ];
+  services.udev.packages = with pkgs; [
+    (game-devices-udev-rules.overrideAttrs (old: {
+      patches = [
+        ./patches/game-devices-udev-horipad-steam.patch
+      ];
+    }))
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
