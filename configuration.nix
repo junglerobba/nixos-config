@@ -176,7 +176,7 @@ in
           obs-vkcapture
           liberation_ttf
           noto-fonts
-          noto-fonts-cjk
+          noto-fonts-cjk-sans
           noto-fonts-lgc-plus
           noto-fonts-color-emoji
         ];
@@ -206,7 +206,7 @@ in
     pkg:
     builtins.elem (lib.getName pkg) [
       "steam"
-      "steam-original"
+      "steam-unwrapped"
       "steam-run"
     ];
 
@@ -229,7 +229,7 @@ in
 
   fonts.packages =
     (with pkgs; [
-      noto-fonts-cjk
+      noto-fonts-cjk-sans
       noto-fonts-emoji
       jetbrains-mono
     ])
